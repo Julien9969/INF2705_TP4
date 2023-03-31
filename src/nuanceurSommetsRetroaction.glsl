@@ -73,6 +73,18 @@ void main( void )
         // garder la couleur courante
         ColorMod = Color;
 
+        // rebondir sur les parois
+        // float rayonSphere = sqrt( bDim.x * bDim.x + (bDim.z  - 3) * (bDim.z - 3) + bDim.y * bDim.y );
+        // float distanceVertex = sqrt( VertexMod.x * VertexMod.x + (VertexMod.z - 3) * (VertexMod.z - 3) + VertexMod.y * VertexMod.y );
+        vec3 positionPasRapportSphere = VertexMod / bDim;
+
+        if (length(positionPasRapportSphere) >= 1)
+        {
+            vec3 rapport = normalize(positionPasRapportSphere);
+            vitesseMod = reflect(vitesseMod * bDim, rapport / length(rapport)) / bDim;
+            VertexMod = VertexMod + (1 - length(positionPasRapportSphere)) * VertexMod;
+        }
+
         // rebondir sur le plancher
         const float hauteurPlancher = 3.0;
         if (VertexMod.z < hauteurPlancher)
@@ -84,7 +96,4 @@ void main( void )
         // appliquer la gravité
         vitesseMod.z = vitesseMod.z - (gravite * dt);
     }
-
-    // Mettre un test bidon afin que l'optimisation du compilateur n'élimine pas les attributs dt, gravite, tempsDeVieMax posPuits et bDim.
-    // Vous ENLEVEREZ cet énoncé inutile!
 }
