@@ -73,20 +73,20 @@ void main( void )
         // garder la couleur courante
         ColorMod = Color;
 
-        // rebondir sur les parois
-        // float rayonSphere = sqrt( bDim.x * bDim.x + (bDim.z  - 3) * (bDim.z - 3) + bDim.y * bDim.y );
-        // float distanceVertex = sqrt( VertexMod.x * VertexMod.x + (VertexMod.z - 3) * (VertexMod.z - 3) + VertexMod.y * VertexMod.y );
-        vec3 positionPasRapportSphere = VertexMod / bDim;
+        vec3 posSphUnitaire = VertexMod / bDim ;
+        vec3 vitSphUnitaire = vitesseMod * bDim ;
 
-        if (length(positionPasRapportSphere) >= 1)
+        float dist = length (posSphUnitaire);
+        if ( dist >= 1.0 ) // ... la particule est sortie de la bulle
         {
-            vec3 rapport = normalize(positionPasRapportSphere);
-            vitesseMod = reflect(vitesseMod * bDim, rapport / length(rapport)) / bDim;
-            VertexMod = VertexMod + (1 - length(positionPasRapportSphere)) * VertexMod;
+            VertexMod = ( 2.0 - dist ) * VertexMod ;
+            vec3 N = posSphUnitaire / dist ; // normaliser N
+            vec3 vitReflechieSphUnitaire = reflect ( vitSphUnitaire , N );
+            vitesseMod = vitReflechieSphUnitaire / bDim ;
         }
 
         // rebondir sur le plancher
-        const float hauteurPlancher = 3.0;
+        float hauteurPlancher = 0.5 * pointsize;
         if (VertexMod.z < hauteurPlancher)
         {
             vitesseMod.z = -vitesseMod.z;
