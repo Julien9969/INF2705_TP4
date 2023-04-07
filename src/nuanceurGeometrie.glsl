@@ -19,7 +19,7 @@ layout (std140) uniform varsUnif
 in Attribs {
     vec4 couleur;
     float tempsDeVieRestant;
-    //float sens; // du vol (partie 3)
+    float sens; // du vol (partie 3)
     float hauteur; // de la particule dans le repère du monde (partie 3)
 } AttribsIn[];
 
@@ -42,7 +42,6 @@ void main()
 
     for ( int i = 0 ; i < 4 ; ++i )
     {
-
         float fact = gl_in[0].gl_PointSize;
 
         vec2 decalage = coins[i]; // on positionne successivement aux quatre coins
@@ -50,24 +49,27 @@ void main()
 
         gl_Position = matrProj * pos;    // on termine la transformation débutée dans le nuanceur de sommets
 
+        float A = (AttribsIn[0].tempsDeVieRestant / tempsDeVieMax);
         AttribsOut.couleur = AttribsIn[0].couleur;
+        AttribsOut.couleur.a = A;
+
         AttribsOut.texCoord = coins[i] + vec2( 0.5, 0.5 ); // on utilise coins[] pour définir des coordonnées de texture
         AttribsOut.tempsDeVieRestant = AttribsIn[0].tempsDeVieRestant;
 
-         if ( texnumero == 2)
+        if ( texnumero == 1 && AttribsIn[0].sens == -1) {
+            AttribsOut.texCoord.s =  AttribsOut.texCoord.s * AttribsIn[0].sens; 
+        }
+
+        if ( texnumero == 2)
         {   
             if ( AttribsIn[0].hauteur >= hauteurInerte){ 
                 float angle = 6.0 * AttribsIn[0].tempsDeVieRestant;
                 mat2 matrix = mat2(cos(angle),-sin(angle),
-                                    sin(angle),cos(angle));
+                                   sin(angle), cos(angle));
                 vec2 vec = vec2(0.5, 0.5);
                 AttribsOut.texCoord.st = (AttribsOut.texCoord.st - vec) * matrix + vec;
             }
         }
-
-
-
-
         EmitVertex();
     }
 }

@@ -15,7 +15,6 @@ void main( void )
 {
     FragColor = AttribsIn.couleur;
     
-    
     if ( texnumero != 0 )
     {
         vec2 coord = AttribsIn.texCoord;
@@ -24,7 +23,6 @@ void main( void )
             int num = int ( mod ( 18.0 * AttribsIn.tempsDeVieRestant , nlutins ) ); 
             coord.s = ( coord.s + num ) / nlutins ;
         }
-
 
         vec4 texColor = texture(leLutin, coord);
         if( texColor.a < 0.1) discard;

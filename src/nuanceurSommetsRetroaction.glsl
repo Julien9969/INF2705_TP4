@@ -83,6 +83,8 @@ void main( void )
             vec3 N = posSphUnitaire / dist ; // normaliser N
             vec3 vitReflechieSphUnitaire = reflect ( vitSphUnitaire , N );
             vitesseMod = vitReflechieSphUnitaire / bDim ;
+            vitesseMod = vitesseMod / 2.0;
+
         }
 
         // rebondir sur le plancher
@@ -91,8 +93,8 @@ void main( void )
         {
             vitesseMod.z = -vitesseMod.z;
             VertexMod.z = hauteurPlancher;
+            vitesseMod = vitesseMod / 2.0;
         }
-
         // appliquer la gravité
         vitesseMod.z = vitesseMod.z - (gravite * dt);
     }
